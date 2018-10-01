@@ -105,9 +105,11 @@ void  UPuzzlePlatformsGameInstance::CreateSession()
 	if (SessionInterface.IsValid())
 	{
 		FOnlineSessionSettings SessionSettings;
-		SessionSettings.bIsLANMatch = true;
+		SessionSettings.bIsLANMatch = false;
 		SessionSettings.NumPublicConnections = 2;
 		SessionSettings.bShouldAdvertise = true;
+		SessionSettings.bUsesPresence = true;
+
 		SessionInterface->CreateSession(0, SESSION_NAME, SessionSettings);
 	}	
 }
@@ -144,6 +146,8 @@ void UPuzzlePlatformsGameInstance::RefreshServerList()
 	{
 		//SessionSearch->bIsLanQuery = true; // May need to put this back in
 		//SessionSearch->PingBucketSize = 500; // Guy recommended this if I removebIsLanQuerey, but doesn't change result. Will not find sessionID
+		SessionSearch->MaxSearchResults = 100;
+		SessionSearch->QuerySettings.Set(SEARCH_PRESENCE, true, EOnlineComparisonOp::Equals);
 		UE_LOG(LogTemp, Warning, TEXT("Starting find session %s"));
 		SessionInterface->FindSessions(0, SessionSearch.ToSharedRef());
 	}
